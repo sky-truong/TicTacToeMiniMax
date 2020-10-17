@@ -10,6 +10,20 @@
 </head>
 
 <body>
+    <header>
+        <h1>Tic Tac Toe</h1>
+    </header>
+
+    <div class="score-board">
+        <div id ="user-label" class="badge">user</div>
+        <div id ="computer-label" class="badge">comp</div>
+        <span id="user-score">0</span> : <span id="computer-score">0</span>
+    </div>
+    <div class="replay-button">
+            <button class="easy-mode" onClick="startGame()" id="easy">Easy Mode</button>
+            <button class="hard-mode" onClick="startGame()" id="hard">Hard Mode</button>
+
+    </div>
     <table>
         <tr>
             <td class="cell" id="0"></td>
@@ -30,7 +44,7 @@
     <div class="endgame">
         <div class="text"></div>
     </div>
-    <button onClick="startGame()">Replay</button>
+    
 
     <script src="script.js"></script>
 </body>

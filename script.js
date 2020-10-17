@@ -1,4 +1,11 @@
+let userScore = 0;
+let computerScore = 0;
+const userScore_span = document.getElementById("user-score");
+const computerScore_span = document.getElementById("computer-score");
+const easy_button = document.getElementById("easy");
+const hard_button = document.getElementById("hard");
 var origBoard;
+let mode;
 const huPlayer = 'O';
 const aiPlayer = 'X';
 const winCombos = [
@@ -25,10 +32,24 @@ function startGame() {
     }
 }
 
+easy_button.addEventListener('click', easyMode);
+
+hard_button.addEventListener('click', hardMode);
+
+function easyMode() {
+    mode = "easy";
+    //console.log(mode);
+}
+
+function hardMode() {
+    mode = "hard";
+    //console.log(mode);
+}
+
 function turnClick(square) {
     if(typeof origBoard[square.target.id] == 'number') {
         turn(square.target.id, huPlayer);
-    if(!checkTie()) turn(bestSpot(), aiPlayer);
+    if(!checkTie()) turn(computerMove(mode), aiPlayer);
     } 
 }
 
@@ -36,7 +57,7 @@ function turn(squareId, player) {
     origBoard[squareId] = player;
     document.getElementById(squareId).innerText = player;
     let gameWon = checkWin(origBoard, player);
-    if(gameWon) gameOver(gameWon);     
+    if(gameWon) gameOver(gameWon);
 }
 
 function checkWin(board, player) {
@@ -52,6 +73,7 @@ function checkWin(board, player) {
 }
 
 function gameOver(gameWon) {
+
     for(let index of winCombos[gameWon.index]) {
         document.getElementById(index).style.backgroundColor = (gameWon.player == huPlayer) ? "blue" : "red";
             
@@ -59,7 +81,10 @@ function gameOver(gameWon) {
     for(var i = 0; i < cells.length; i ++) {
         cells[i].removeEventListener('click', turnClick, false);
     }
-    declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose...");
+    declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose \u{1F627}...");
+    gameWon.player == huPlayer ? userScore++ : computerScore++;
+    userScore_span.innerHTML = userScore;
+    computerScore_span.innerHTML = computerScore;
 }
 
 function declareWinner(who) {
@@ -71,8 +96,16 @@ function emptySquares() {
     return origBoard.filter(s => typeof s == 'number');
 }
 
-function bestSpot() {
-    return minimax(origBoard, aiPlayer).index;
+function computerMove(mode) {
+    let spot = Math.floor(Math.random()*3);
+    switch(mode){
+        case "easy":
+            return emptySquares()[spot];
+        case "hard":
+            return minimax(origBoard, aiPlayer).index;
+        default:
+            return emptySquares()[0];
+    }
 }
 
 function checkTie() {
@@ -81,7 +114,7 @@ function checkTie() {
             cells[i].style.backgroundColor = "green";
             cells[i].removeEventListener('click', turnClick, false);
         }
-        declareWinner("Tie Game!");
+        declareWinner("Tie Game \u{1F62C}"); 
         return true;
     }
     return false;
